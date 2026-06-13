@@ -1,0 +1,1147 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Arquitectura Harness para Codex - Guía simple</title>
+  <style>
+    :root {
+      --bg: #f7f7f2;
+      --paper: #ffffff;
+      --ink: #202124;
+      --muted: #5f6368;
+      --line: #d7d2c4;
+      --blue: #2454a6;
+      --green: #1f7a5c;
+      --red: #a6422c;
+      --gold: #9a6a18;
+      --soft-blue: #e9f0ff;
+      --soft-green: #e8f5ef;
+      --soft-red: #fbeeea;
+      --soft-gold: #fff4d9;
+      --shadow: 0 18px 45px rgba(32, 33, 36, 0.08);
+      --radius: 8px;
+      --content: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .hero {
+      background:
+        linear-gradient(120deg, rgba(36, 84, 166, 0.94), rgba(31, 122, 92, 0.9)),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.16) 0 1px, transparent 1px 18px);
+      color: white;
+      min-height: 72vh;
+      display: flex;
+      align-items: center;
+      padding: 72px 24px 56px;
+    }
+
+    .hero-inner {
+      max-width: var(--content);
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .eyebrow {
+      margin: 0 0 14px;
+      font-weight: 700;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      opacity: 0.9;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(2.35rem, 7vw, 5.4rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 780px;
+      margin: 24px 0 0;
+      font-size: clamp(1.05rem, 2.2vw, 1.35rem);
+      color: rgba(255,255,255,0.92);
+    }
+
+    .hero-strip {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 32px;
+    }
+
+    .hero-pill {
+      border: 1px solid rgba(255,255,255,0.38);
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .page {
+      max-width: var(--content);
+      margin: 0 auto;
+      padding: 38px 24px 84px;
+    }
+
+    section {
+      margin-top: 42px;
+    }
+
+    .intro-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .panel {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px;
+    }
+
+    .panel h2,
+    section h2 {
+      margin: 0 0 12px;
+      font-size: clamp(1.5rem, 3vw, 2.15rem);
+      letter-spacing: 0;
+      line-height: 1.15;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1.08rem;
+      letter-spacing: 0;
+    }
+
+    p {
+      margin: 0 0 12px;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .callout {
+      border-left: 5px solid var(--blue);
+      background: var(--soft-blue);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-top: 18px;
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .score {
+      display: grid;
+      gap: 12px;
+    }
+
+    .score-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 14px;
+      background: #fbfaf7;
+    }
+
+    .score-item span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .step {
+      min-height: 132px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 16px;
+      position: relative;
+    }
+
+    .step::after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      right: -11px;
+      width: 10px;
+      height: 2px;
+      background: var(--line);
+    }
+
+    .step:nth-child(5)::after,
+    .step:last-child::after {
+      display: none;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-weight: 800;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .folder-map {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    .tree {
+      background: #202124;
+      color: #f6f8fa;
+      border-radius: var(--radius);
+      padding: 18px;
+      overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92rem;
+      line-height: 1.6;
+      white-space: pre;
+      box-shadow: var(--shadow);
+    }
+
+    .tree .folder {
+      color: #89ddff;
+    }
+
+    .tree .file {
+      color: #c3e88d;
+    }
+
+    .tree .note {
+      color: #c7c9d1;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .card small {
+      display: inline-block;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .tag-blue {
+      color: var(--blue);
+      background: var(--soft-blue);
+    }
+
+    .tag-green {
+      color: var(--green);
+      background: var(--soft-green);
+    }
+
+    .tag-red {
+      color: var(--red);
+      background: var(--soft-red);
+    }
+
+    .tag-gold {
+      color: var(--gold);
+      background: var(--soft-gold);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: table;
+    }
+
+    th,
+    td {
+      text-align: left;
+      vertical-align: top;
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    th {
+      background: #efede6;
+      font-size: 0.9rem;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    code {
+      background: #efede6;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.92em;
+    }
+
+    .lane {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      border-radius: var(--radius);
+      margin-top: 12px;
+      overflow: hidden;
+    }
+
+    .lane-title {
+      background: #efede6;
+      padding: 16px;
+      font-weight: 800;
+    }
+
+    .lane-body {
+      padding: 16px;
+    }
+
+    .lane-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    .connect {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .connect .card {
+      min-height: 180px;
+      border-top: 5px solid var(--green);
+    }
+
+    .checklist {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .checklist .card {
+      border-left: 5px solid var(--blue);
+    }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 980px) {
+      .intro-grid,
+      .folder-map,
+      .connect,
+      .grid,
+      .checklist {
+        grid-template-columns: 1fr;
+      }
+
+      .flow {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .step::after {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero {
+        min-height: auto;
+        padding: 54px 18px 42px;
+      }
+
+      .page {
+        padding: 28px 18px 64px;
+      }
+
+      .flow {
+        grid-template-columns: 1fr;
+      }
+
+      .lane {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Guía simple del proyecto</p>
+      <h1>Arquitectura Harness para Codex</h1>
+      <p class="hero-copy">
+        Este documento explica, en palabras simples, para qué sirve cada carpeta y archivo del Harness,
+        cómo se conectan entre sí y cómo usarlo como plantilla para proyectos nuevos.
+      </p>
+      <div class="hero-strip" aria-label="Conceptos principales">
+        <span class="hero-pill">Requisitos antes de código</span>
+        <span class="hero-pill">Arquitectura documentada</span>
+        <span class="hero-pill">Seguridad revisada</span>
+        <span class="hero-pill">Pruebas planeadas</span>
+        <span class="hero-pill">PRs pequeños</span>
+        <span class="hero-pill">Agents + skills</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <section class="intro-grid">
+      <div class="panel">
+        <h2>¿Qué es este Harness?</h2>
+        <p>
+          Es una estructura de trabajo para que Codex no salte directo a programar. Funciona como una lista
+          de control inteligente: primero se entiende el problema, luego se escriben requisitos, se diseña la
+          arquitectura, se revisa seguridad, se planean pruebas y recién después se implementa.
+        </p>
+        <p>
+          En corto: el Harness convierte una idea suelta en un plan de entrega mantenible, revisable y seguro.
+        </p>
+        <div class="callout">
+          <strong>Explicado fácil</strong>
+          Imagina que quieres construir una casa. Este Harness evita empezar comprando ladrillos sin plano.
+          Primero define qué casa quieres, quién la usará, qué riesgos hay, cómo se probará y cómo se entregará por partes.
+        </div>
+      </div>
+
+      <aside class="panel score" aria-label="Resumen rápido">
+        <div class="score-item">
+          <h3>El cerebro</h3>
+          <span><code>AGENTS.md</code> define las reglas generales.</span>
+        </div>
+        <div class="score-item">
+          <h3>Los especialistas</h3>
+          <span><code>.codex/agents</code> define roles como Architect, Security Reviewer y Test Engineer.</span>
+        </div>
+        <div class="score-item">
+          <h3>La memoria</h3>
+          <span><code>docs</code> guarda especificaciones, diseños, ADRs, pruebas, planes y revisiones.</span>
+        </div>
+        <div class="score-item">
+          <h3>La fábrica</h3>
+          <span><code>.codex/workflows</code>, <code>.codex/templates</code> y <code>skills</code> guían el trabajo.</span>
+        </div>
+      </aside>
+    </section>
+
+    <section>
+      <h2>El flujo completo</h2>
+      <p class="muted">
+        Este es el recorrido ideal de una idea hasta llegar a código revisado.
+      </p>
+
+      <div class="flow">
+        <article class="step">
+          <span class="step-number">1</span>
+          <h3>Idea</h3>
+          <p>Alguien pide una función, arreglo o mejora.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">2</span>
+          <h3>Spec</h3>
+          <p>Se documentan objetivo, usuarios, requisitos y criterios de aceptación.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">3</span>
+          <h3>Diseño</h3>
+          <p>Se define arquitectura, límites, componentes, datos e integraciones.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">4</span>
+          <h3>Seguridad</h3>
+          <p>Se revisan auth, permisos, secretos, datos y riesgos de IA si aplica.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">5</span>
+          <h3>Pruebas</h3>
+          <p>Se planean unitarias, integración, regresión y evaluación de IA.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">6</span>
+          <h3>Plan</h3>
+          <p>Se decide cómo implementar y cómo dividir el cambio en PRs pequeños.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">7</span>
+          <h3>Código</h3>
+          <p>Codex implementa siguiendo la spec, diseño, ADRs y pruebas.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">8</span>
+          <h3>Review</h3>
+          <p>Se revisa calidad, seguridad, pruebas, rollback y documentación.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">9</span>
+          <h3>Entrega</h3>
+          <p>Se valida Definition of Done y se deja evidencia.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">10</span>
+          <h3>Aprendizaje</h3>
+          <p>Los ADRs y reviews quedan como memoria para el próximo cambio.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="folder-map">
+      <div>
+        <h2>Mapa de carpetas</h2>
+        <p class="muted">
+          Esta es la estructura principal. Piensa en ella como el archivador del proyecto.
+        </p>
+        <div class="tree" aria-label="Arbol de carpetas">
+<span class="folder">proyecto-bot-proveedores/</span>
+|-- <span class="file">AGENTS.md</span>                            <span class="note">reglas maestras del Harness</span>
+|-- <span class="file">README.md</span>                            <span class="note">guía rápida del repositorio</span>
+|-- <span class="file">.gitignore</span>                           <span class="note">evita subir temporales o secretos</span>
+|-- <span class="file">harness-arquitectura-for-dummies.html</span> <span class="note">esta explicación visual</span>
+|-- <span class="folder">.codex/</span>
+|   |-- <span class="folder">agents/</span>                         <span class="note">roles especialistas</span>
+|   |-- <span class="folder">workflows/</span>                      <span class="note">procesos de entrega</span>
+|   +-- <span class="folder">templates/</span>                      <span class="note">formatos reutilizables</span>
+|-- <span class="folder">skills/</span>                             <span class="note">capacidades y checklists</span>
+|-- <span class="folder">docs/</span>
+|   |-- <span class="folder">specs/</span>                          <span class="note">requisitos</span>
+|   |-- <span class="folder">designs/</span>                        <span class="note">arquitectura y planes</span>
+|   |-- <span class="folder">adr/</span>                            <span class="note">decisiones importantes</span>
+|   |-- <span class="folder">tests/</span>                          <span class="note">estrategia de pruebas</span>
+|   |-- <span class="folder">pr-plan/</span>                        <span class="note">cadena de PRs</span>
+|   |-- <span class="folder">operations/</span>                     <span class="note">deploy, rollback, gobierno</span>
+|   +-- <span class="folder">reviews/</span>                        <span class="note">revisiones finales</span>
+|-- <span class="folder">src/</span>                                <span class="note">código futuro</span>
++-- <span class="folder">tests/</span>                              <span class="note">tests automatizados futuros</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>La idea clave</h2>
+        <p>
+          <code>.codex</code> le dice a Codex cómo debe trabajar. <code>docs</code> guarda la evidencia del trabajo.
+          <code>src</code> y <code>tests</code> son donde eventualmente vivirán el código y las pruebas reales.
+        </p>
+        <p>
+          Si solo tienes instrucciones pero no documentos, no hay trazabilidad. Si solo tienes documentos pero no workflows,
+          Codex puede trabajar de forma inconsistente. Este Harness junta las dos cosas.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Para qué sirve cada pieza</h2>
+      <div class="grid">
+        <article class="card">
+          <span class="tag tag-blue">Reglas</span>
+          <h3><code>AGENTS.md</code></h3>
+          <p>
+            Es el contrato principal con Codex. Define principios, flujo estándar, requisitos de documentación,
+            seguridad, testing, arquitectura y cuándo una tarea está lista o terminada.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-green">Guía</span>
+          <h3><code>README.md</code></h3>
+          <p>
+            Explica cómo usar el Harness sin tener que leer todos los archivos internos. Es la entrada rápida para humanos.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-red">Higiene</span>
+          <h3><code>.gitignore</code></h3>
+          <p>
+            Evita subir archivos temporales, dependencias, llaves, certificados o secretos al repositorio.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-blue">Roles</span>
+          <h3><code>.codex/agents</code></h3>
+          <p>
+            Contiene especialistas: Product Analyst, Architect, Security Reviewer, Test Engineer, DevOps,
+            Code Reviewer y AI Foundry Engineer.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-green">Proceso</span>
+          <h3><code>.codex/workflows</code></h3>
+          <p>
+            Define qué pasos seguir para features, bugs y reviews de arquitectura. Es el camino recomendado.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-gold">Formatos</span>
+          <h3><code>.codex/templates</code></h3>
+          <p>
+            Son formularios base para specs, diseños, ADRs, pruebas, seguridad, implementación y PR plans.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-blue">Capacidades</span>
+          <h3><code>skills</code></h3>
+          <p>
+            Instrucciones locales reutilizables para SDD, TDD, security review, architecture review, PR chain y AI Foundry.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-green">Evidencia</span>
+          <h3><code>docs</code></h3>
+          <p>
+            Es la memoria formal: lo que se decidió, por qué se decidió, cómo se probará y cómo se revisará.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-red">Código</span>
+          <h3><code>src</code> y <code>tests</code></h3>
+          <p>
+            Ahí irá el producto real. El Harness existe para que lo que llegue allí tenga contexto, pruebas y revisión.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Diferencia entre agent y skill</h2>
+      <p class="muted">
+        Esta es una de las ideas más importantes del Harness. Un agent y una skill no son lo mismo.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <span class="tag tag-blue">Agent</span>
+          <h3>Es el especialista</h3>
+          <p>
+            Un agent le dice a Codex con qué mentalidad debe pensar. Por ejemplo:
+            "piensa como arquitecto", "piensa como revisor de seguridad" o "piensa como tester".
+          </p>
+          <p>
+            Ejemplo fácil: si estás construyendo una casa, el agent sería la persona arquitecta que entiende planos,
+            espacios, riesgos y estructura.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag tag-green">Skill</span>
+          <h3>Es la receta</h3>
+          <p>
+            Una skill le dice a Codex qué pasos debe seguir para hacer una tarea. Por ejemplo:
+            revisar arquitectura, escribir una spec, planear pruebas o dividir PRs.
+          </p>
+          <p>
+            Ejemplo fácil: si estás cocinando, la skill sería la receta paso a paso para preparar bien el plato.
+          </p>
+        </article>
+
+        <article class="card">
+          <span class="tag tag-gold">Juntos</span>
+          <h3>Especialista + receta</h3>
+          <p>
+            El agent pone el criterio. La skill pone el método. Juntos hacen que Codex piense bien y trabaje ordenado.
+          </p>
+          <p>
+            Ejemplo fácil: "Chef" es el agent. "Receta de pastel" es la skill. El chef usa la receta para no improvisar.
+          </p>
+        </article>
+      </div>
+
+      <table style="margin-top: 18px;">
+        <thead>
+          <tr>
+            <th>Pregunta</th>
+            <th>Agent</th>
+            <th>Skill</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>¿Qué es?</td>
+            <td>Un rol o punto de vista.</td>
+            <td>Un proceso o checklist.</td>
+          </tr>
+          <tr>
+            <td>¿Para qué sirve?</td>
+            <td>Para pensar como especialista.</td>
+            <td>Para seguir pasos repetibles.</td>
+          </tr>
+          <tr>
+            <td>Ejemplo del repo</td>
+            <td><code>.codex/agents/architect.md</code></td>
+            <td><code>skills/architecture-review/SKILL.md</code></td>
+          </tr>
+          <tr>
+            <td>En palabras simples</td>
+            <td>"Quién piensa"</td>
+            <td>"Qué pasos sigue"</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Cómo se comunican agents y skills</h2>
+      <p class="muted">
+        No se conectan como código con un import. Se conectan por instrucciones escritas en los workflows y en los propios agents.
+      </p>
+
+      <div class="flow">
+        <article class="step">
+          <span class="step-number">1</span>
+          <h3>Workflow</h3>
+          <p>Dice qué rol usar y qué skill aplicar.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">2</span>
+          <h3>Agent</h3>
+          <p>Codex adopta la mentalidad del especialista.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">3</span>
+          <h3>Skill</h3>
+          <p>Codex sigue el checklist o proceso.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">4</span>
+          <h3>Template</h3>
+          <p>Codex usa un formato para escribir el resultado.</p>
+        </article>
+        <article class="step">
+          <span class="step-number">5</span>
+          <h3>Docs</h3>
+          <p>El resultado queda guardado como evidencia.</p>
+        </article>
+      </div>
+
+      <div class="panel" style="margin-top: 18px;">
+        <h3>Ejemplo con Architect</h3>
+        <p>
+          En <code>.codex/workflows/feature-delivery.md</code> el flujo dice:
+        </p>
+        <div class="tree" aria-label="Ejemplo de conexión entre agent y skill">
+3. Use Architect
+4. Apply Architecture Review skill
+        </div>
+        <p style="margin-top: 14px;">
+          Eso significa: primero Codex piensa como <code>Architect</code>, usando las reglas de
+          <code>.codex/agents/architect.md</code>. Luego aplica la receta de
+          <code>skills/architecture-review/SKILL.md</code> para revisar límites, componentes, integraciones,
+          riesgos, tradeoffs y ADRs.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <h3>Product Analyst + SDD</h3>
+          <p>
+            El agent entiende el problema de negocio. La skill <code>sdd</code> convierte eso en una especificación.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Architect + Architecture Review</h3>
+          <p>
+            El agent diseña la solución. La skill <code>architecture-review</code> obliga a revisar riesgos,
+            límites, componentes y ADRs.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Security Reviewer + Security Review</h3>
+          <p>
+            El agent piensa en amenazas. La skill <code>security-review</code> guía la revisión de auth,
+            permisos, secretos y datos.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Test Engineer + TDD</h3>
+          <p>
+            El agent piensa en calidad. La skill <code>tdd</code> define pruebas antes o junto con la implementación.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Code Reviewer + PR Chain</h3>
+          <p>
+            El agent revisa mantenibilidad. La skill <code>pr-chain</code> ayuda a dividir cambios grandes en PRs pequeños.
+          </p>
+        </article>
+        <article class="card">
+          <h3>AI Foundry Engineer + AI Foundry</h3>
+          <p>
+            El agent piensa en IA empresarial. La skill <code>ai-foundry</code> guía agentes, RAG, evaluación y observabilidad.
+          </p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <strong>La frase para recordarlo</strong>
+        El agent decide "con qué sombrero piensa Codex". La skill decide "qué pasos sigue Codex".
+      </div>
+    </section>
+
+    <section>
+      <h2>Cómo se conectan las carpetas</h2>
+      <div class="connect">
+        <article class="card">
+          <h3>1. La regla manda</h3>
+          <p>
+            <code>AGENTS.md</code> establece que Codex debe hacer discovery, spec, diseño, seguridad,
+            pruebas, plan de implementación y review antes de entregar cambios importantes.
+          </p>
+        </article>
+        <article class="card">
+          <h3>2. El workflow guía</h3>
+          <p>
+            <code>.codex/workflows/feature-delivery.md</code> dice el orden específico para una nueva feature
+            y qué documentos deben existir.
+          </p>
+        </article>
+        <article class="card">
+          <h3>3. La plantilla da forma</h3>
+          <p>
+            <code>.codex/templates</code> evita documentos improvisados. Cada artefacto tiene campos de estado,
+            riesgos, evidencia y aprobación.
+          </p>
+        </article>
+        <article class="card">
+          <h3>4. Docs guarda prueba</h3>
+          <p>
+            <code>docs</code> guarda lo que se aprobó. Después el código en <code>src</code> debe respetar esa evidencia.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Qué va dentro de <code>docs</code></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Carpeta</th>
+            <th>Sirve para</th>
+            <th>Ejemplo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>docs/specs</code></td>
+            <td>Definir qué se necesita, quién lo usa y cómo saber si está correcto.</td>
+            <td><code>supplier-onboarding.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/designs</code></td>
+            <td>Explicar arquitectura, componentes, integraciones, seguridad y plan de implementación.</td>
+            <td><code>supplier-onboarding-architecture.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/adr</code></td>
+            <td>Guardar decisiones importantes y su razón.</td>
+            <td><code>0002-use-azure-ai-search.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/tests</code></td>
+            <td>Planear pruebas unitarias, integración, regresión, seguridad y evaluaciones de IA.</td>
+            <td><code>supplier-onboarding-test-plan.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/pr-plan</code></td>
+            <td>Dividir una entrega grande en PRs pequeños.</td>
+            <td><code>supplier-onboarding.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/operations</code></td>
+            <td>Documentar deploy, rollback, observabilidad, gobierno y producción.</td>
+            <td><code>repository-governance.md</code></td>
+          </tr>
+          <tr>
+            <td><code>docs/reviews</code></td>
+            <td>Registrar revisiones de código, arquitectura, seguridad o entrega.</td>
+            <td><code>supplier-onboarding-final-review.md</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Los roles especialistas</h2>
+      <p class="muted">
+        Estos roles no son personas reales dentro del repo. Son instrucciones para que Codex piense con el sombrero correcto.
+      </p>
+
+      <div class="lane">
+        <div class="lane-title">Product Analyst</div>
+        <div class="lane-body">
+          <p>Convierte una idea en requisitos, usuarios, viajes, reglas de negocio y criterios de aceptación.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">Architect</div>
+        <div class="lane-body">
+          <p>Define límites, componentes, integraciones, despliegue, escalabilidad, observabilidad y ADRs.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">Security Reviewer</div>
+        <div class="lane-body">
+          <p>Busca riesgos de autenticación, autorización, secretos, fuga de datos, tenant isolation y seguridad de IA.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">Test Engineer</div>
+        <div class="lane-body">
+          <p>Define pruebas, cobertura, regresión, quality gates y evaluaciones para sistemas con IA.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">DevOps Engineer</div>
+        <div class="lane-body">
+          <p>Piensa en CI/CD, infraestructura, ambientes, monitoreo, alertas, rollback y producción.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">Code Reviewer</div>
+        <div class="lane-body">
+          <p>Revisa que el código sea correcto, simple, mantenible, testeable, seguro y fácil de revertir.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">AI Foundry Engineer</div>
+        <div class="lane-body">
+          <p>Se usa cuando el proyecto involucra agentes, RAG, Azure OpenAI, AI Search o Microsoft AI Foundry.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Las plantillas principales</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Plantilla</th>
+            <th>Pregunta que responde</th>
+            <th>Resultado esperado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>spec-template.md</code></td>
+            <td>¿Qué necesita el usuario y cómo sabremos que funciona?</td>
+            <td>Requisitos claros y criterios de aceptación.</td>
+          </tr>
+          <tr>
+            <td><code>design-template.md</code></td>
+            <td>¿Cómo lo construiremos de forma mantenible?</td>
+            <td>Arquitectura, límites, componentes y riesgos.</td>
+          </tr>
+          <tr>
+            <td><code>adr-template.md</code></td>
+            <td>¿Qué decisión importante tomamos y por qué?</td>
+            <td>Memoria técnica para el futuro.</td>
+          </tr>
+          <tr>
+            <td><code>security-review-template.md</code></td>
+            <td>¿Qué puede salir mal desde seguridad?</td>
+            <td>Riesgos, mitigaciones y aprobación.</td>
+          </tr>
+          <tr>
+            <td><code>test-plan-template.md</code></td>
+            <td>¿Cómo vamos a probarlo?</td>
+            <td>Casos de prueba, quality gates y evidencia.</td>
+          </tr>
+          <tr>
+            <td><code>implementation-plan-template.md</code></td>
+            <td>¿Cuál es el plan exacto para implementarlo?</td>
+            <td>Pasos, precondiciones, rollback y controles.</td>
+          </tr>
+          <tr>
+            <td><code>pr-plan-template.md</code></td>
+            <td>¿Cómo dividimos el trabajo en PRs revisables?</td>
+            <td>Cadena de PRs pequeños y reversibles.</td>
+          </tr>
+          <tr>
+            <td><code>delivery-checklist-template.md</code></td>
+            <td>¿Está listo para empezar y está terminado de verdad?</td>
+            <td>Definition of Ready y Definition of Done verificables.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Cómo usarlo en un proyecto real</h2>
+      <div class="checklist">
+        <article class="card">
+          <h3>Para una feature nueva</h3>
+          <p>
+            Abre el workflow <code>.codex/workflows/feature-delivery.md</code>. Luego crea una spec,
+            diseño, revisión de seguridad si aplica, test plan, implementation plan y PR plan.
+          </p>
+          <p>
+            Solo después de eso empieza el código en <code>src</code>.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Para un bug</h3>
+          <p>
+            Usa <code>.codex/workflows/bug-fix.md</code>. Primero reproduce el bug, define comportamiento esperado,
+            encuentra causa raíz, crea una prueba de regresión y arregla lo mínimo.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Para una decisión técnica</h3>
+          <p>
+            Crea un ADR en <code>docs/adr</code>. No dejes decisiones grandes escondidas en conversaciones.
+            El futuro equipo necesita saber por qué se eligió una ruta.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Para reutilizarlo</h3>
+          <p>
+            Sube este repo a GitHub como template. En cada proyecto nuevo, copias esta estructura o creas
+            el repo desde la plantilla.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section>
+      <h2>Ejemplo mental rápido</h2>
+      <div class="panel">
+        <p>
+          Supón que quieres crear un bot para proveedores. Sin Harness, podrías decir: "Codex, hazme el bot".
+          Eso normalmente produce código rápido pero con huecos.
+        </p>
+        <p>
+          Con Harness, el proceso sería:
+        </p>
+        <ol>
+          <li>Definir quién usa el bot y para qué.</li>
+          <li>Documentar qué puede y qué no puede hacer.</li>
+          <li>Diseñar si usará API, base de datos, ERP, RAG o agente de IA.</li>
+          <li>Revisar permisos, datos sensibles, secretos y auditoría.</li>
+          <li>Crear pruebas para respuestas, tool calling, seguridad y regresión.</li>
+          <li>Dividir la implementación en PRs pequeños.</li>
+          <li>Implementar, probar, revisar y dejar evidencia.</li>
+        </ol>
+        <p>
+          Ese es el valor: Codex se vuelve más disciplinado y el proyecto queda más fácil de mantener.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Reglas simples para no perderse</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>Si no está escrito, no existe</h3>
+          <p>Las decisiones importantes deben quedar en <code>docs</code>, no solo en chat.</p>
+        </article>
+        <article class="card">
+          <h3>Primero el porqué, luego el código</h3>
+          <p>Antes de implementar, entiende objetivo, usuario, riesgos y criterios de aceptación.</p>
+        </article>
+        <article class="card">
+          <h3>Seguridad no es prompt</h3>
+          <p>Los permisos se controlan en arquitectura, API, datos y herramientas, no solo con instrucciones al modelo.</p>
+        </article>
+        <article class="card">
+          <h3>PR pequeño gana</h3>
+          <p>Menos líneas por PR significa review más rápido, rollback más simple y menos sorpresas.</p>
+        </article>
+        <article class="card">
+          <h3>Todo debe poder probarse</h3>
+          <p>Cada requisito importante debe tener prueba, evidencia o validación manual explícita.</p>
+        </article>
+        <article class="card">
+          <h3>ADR para decisiones grandes</h3>
+          <p>Si una decisión afecta el futuro del sistema, crea un ADR.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <p>
+        Documento generado para la raíz del repositorio. Puedes abrir este archivo directamente en el navegador
+        y usarlo como explicación rápida del Harness para ti o para otros colaboradores.
+      </p>
+    </footer>
+  </main>
+</body>
+</html>
