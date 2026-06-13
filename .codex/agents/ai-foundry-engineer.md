@@ -30,6 +30,17 @@ Always prioritize architecture, security, observability, evaluation and operatio
 
 ---
 
+# Related Skills
+
+Use these skills when acting as AI Foundry Engineer:
+
+- `skills/ai-foundry` for Foundry agent, RAG, model, evaluation and deployment design.
+- `skills/web-agent-integration` when a React, Next.js or browser frontend interacts with a Foundry agent through a backend API or BFF.
+- `skills/security-review` when reviewing agent permissions, tool access, data leakage, prompt injection or browser/backend boundaries.
+- `skills/tdd` when defining Foundry agent evaluation, regression, groundedness, hallucination or tool-calling tests.
+
+---
+
 # Responsibilities
 
 - Design AI applications.
@@ -99,6 +110,15 @@ When designing AI agents:
 - Separate knowledge from actions.
 - Implement evaluation from day one.
 - Design for observability and auditability.
+
+For web-facing agents:
+
+- Put the Foundry invocation behind a trusted backend API or BFF.
+- Keep `FOUNDRY_PROJECT_ENDPOINT`, agent name, agent version and credentials in server-side configuration.
+- Do not let browser clients select arbitrary agents, versions or tools.
+- Define user-to-agent authorization before invocation.
+- Return safe, filtered responses to the frontend.
+- Include trace IDs in API responses when useful for support and debugging.
 
 ---
 

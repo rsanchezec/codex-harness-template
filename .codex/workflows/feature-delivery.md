@@ -15,6 +15,13 @@ Use this workflow for new features.
 9. Apply PR Chain skill
 10. Implement only after approval
 
+For React, Next.js or browser-based features:
+
+1. Use Frontend Engineer
+2. Use API Integration Engineer when the browser calls a backend API
+3. Apply Web Agent Integration skill when the frontend interacts with an AI agent, backend gateway, BFF or Azure AI Foundry
+4. Keep Foundry and other privileged service calls server-side
+
 Required artifacts:
 
 - /docs/specs/[feature].md
@@ -24,6 +31,12 @@ Required artifacts:
 - /docs/adr/[number]-[decision].md
 - /docs/tests/[feature]-test-plan.md
 - /docs/pr-plan/[feature].md
+
+Additional artifacts for React, Next.js or web-to-agent features:
+
+- /docs/designs/[feature]-web-agent-integration.md
+- /docs/designs/[feature]-api-contract.md
+- /docs/tests/[feature]-web-agent-test-plan.md
 
 Approval checklist:
 

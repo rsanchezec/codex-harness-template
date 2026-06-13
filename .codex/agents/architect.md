@@ -36,6 +36,7 @@ Use these skills when acting as Architect:
 - `skills/architecture-review` for formal architecture evaluation, risks, tradeoffs and ADR recommendations.
 - `skills/security-review` when the architecture touches authentication, authorization, sensitive data, tenant isolation, AI tools or production access.
 - `skills/ai-foundry` when the solution involves AI agents, RAG, Azure OpenAI, AI Search or Microsoft AI Foundry.
+- `skills/web-agent-integration` when the solution includes React, Next.js, browser frontends, backend APIs, BFFs or web-to-agent integrations.
 - `skills/pr-chain` when the architecture implies multiple implementation stages or chained pull requests.
 - `skills/tdd` when architectural decisions create testability requirements, integration contracts or quality gates.
 
@@ -187,6 +188,25 @@ Never allow:
 - Direct model access to critical systems
 - Security based only on prompts
 - Uncontrolled tool execution
+
+For web applications that use AI agents:
+
+Always define:
+
+- Browser-to-backend boundary
+- Backend-to-agent boundary
+- Frontend framework and rendering model
+- Server-side credential strategy
+- API contract
+- Conversation/session model
+- CORS and rate limiting
+- Audit and trace strategy
+
+Never allow:
+
+- Direct browser access to Azure AI Foundry agents
+- Foundry credentials in React or Next.js client code
+- Browser-controlled agent names, versions or tools
 
 ---
 

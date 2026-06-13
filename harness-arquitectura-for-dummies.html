@@ -464,6 +464,7 @@
         <span class="hero-pill">Pruebas planeadas</span>
         <span class="hero-pill">PRs pequeños</span>
         <span class="hero-pill">Agents + skills</span>
+        <span class="hero-pill">React / Next.js</span>
       </div>
     </div>
   </header>
@@ -639,8 +640,8 @@
           <span class="tag tag-blue">Roles</span>
           <h3><code>.codex/agents</code></h3>
           <p>
-            Contiene especialistas: Product Analyst, Architect, Security Reviewer, Test Engineer, DevOps,
-            Code Reviewer y AI Foundry Engineer.
+            Contiene especialistas: Product Analyst, Architect, Frontend Engineer, API Integration Engineer,
+            Security Reviewer, Test Engineer, DevOps, Code Reviewer y AI Foundry Engineer.
           </p>
         </article>
         <article class="card">
@@ -661,7 +662,8 @@
           <span class="tag tag-blue">Capacidades</span>
           <h3><code>skills</code></h3>
           <p>
-            Instrucciones locales reutilizables para SDD, TDD, security review, architecture review, PR chain y AI Foundry.
+            Instrucciones locales reutilizables para SDD, TDD, security review, architecture review, PR chain,
+            AI Foundry y web-agent integration.
           </p>
         </article>
         <article class="card">
@@ -848,11 +850,78 @@
             El agent piensa en IA empresarial. La skill <code>ai-foundry</code> guía agentes, RAG, evaluación y observabilidad.
           </p>
         </article>
+        <article class="card">
+          <h3>Frontend/API + Web Agent Integration</h3>
+          <p>
+            Los agents diseñan React/Next.js y el backend. La skill <code>web-agent-integration</code> asegura que el navegador no llame directo a Foundry.
+          </p>
+        </article>
       </div>
 
       <div class="callout">
         <strong>La frase para recordarlo</strong>
         El agent decide "con qué sombrero piensa Codex". La skill decide "qué pasos sigue Codex".
+      </div>
+    </section>
+
+    <section>
+      <h2>Cuando el frontend es React o Next.js</h2>
+      <p class="muted">
+        Si tu proyecto tiene una pantalla web, un chat o un formulario en React/Next.js que habla con un agente de IA,
+        el Harness debe cuidar una frontera muy importante: el navegador no debe hablar directo con Foundry.
+      </p>
+
+      <div class="panel">
+        <h3>La arquitectura recomendada</h3>
+        <div class="tree" aria-label="Arquitectura React o Next.js hacia Foundry">
+<span class="folder">React o Next.js UI</span>
+  |
+  |-- usuario escribe mensaje
+  v
+<span class="folder">Backend API o BFF</span>
+  |
+  |-- valida usuario, permisos, CORS, rate limit y datos
+  |-- carga secretos desde variables del servidor
+  v
+<span class="folder">Azure AI Foundry Agent</span>
+  |
+  +-- responde usando instrucciones, herramientas y conocimiento aprobado
+        </div>
+        <p style="margin-top: 14px;">
+          En tu caso, el agente <code>customer-support-agent</code> ya existe en Foundry. Entonces no necesitas crear
+          otro agente para React. Lo que necesitas es un backend gateway que reciba el mensaje de React y llame al agente
+          de forma segura.
+        </p>
+      </div>
+
+      <div class="grid">
+        <article class="card">
+          <span class="tag tag-blue">Frontend</span>
+          <h3>React / Next.js</h3>
+          <p>
+            Muestra la interfaz: chat, formulario, historial, botones, loading, errores y respuesta del agente.
+            Solo manda mensajes al backend.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-green">Backend</span>
+          <h3>API Gateway / BFF</h3>
+          <p>
+            Protege secretos, valida al usuario, controla permisos, llama a Foundry y devuelve una respuesta limpia al frontend.
+          </p>
+        </article>
+        <article class="card">
+          <span class="tag tag-gold">Foundry</span>
+          <h3>AI Agent</h3>
+          <p>
+            Ejecuta la inteligencia del agente. Sus credenciales, endpoint, nombre y versión deben vivir del lado servidor.
+          </p>
+        </article>
+      </div>
+
+      <div class="callout">
+        <strong>Regla simple</strong>
+        React puede saber qué mensaje escribió el usuario. El backend debe saber cómo hablar con Foundry.
       </div>
     </section>
 
@@ -958,6 +1027,18 @@
         </div>
       </div>
       <div class="lane">
+        <div class="lane-title">Frontend Engineer</div>
+        <div class="lane-body">
+          <p>Diseña React, Next.js, componentes, rutas, estado, loading, errores, accesibilidad y consumo seguro de APIs.</p>
+        </div>
+      </div>
+      <div class="lane">
+        <div class="lane-title">API Integration Engineer</div>
+        <div class="lane-body">
+          <p>Diseña el backend gateway entre el frontend y servicios como Azure AI Foundry, con auth, CORS, validación y auditoría.</p>
+        </div>
+      </div>
+      <div class="lane">
         <div class="lane-title">Security Reviewer</div>
         <div class="lane-body">
           <p>Busca riesgos de autenticación, autorización, secretos, fuga de datos, tenant isolation y seguridad de IA.</p>
@@ -1040,6 +1121,16 @@
             <td>¿Está listo para empezar y está terminado de verdad?</td>
             <td>Definition of Ready y Definition of Done verificables.</td>
           </tr>
+          <tr>
+            <td><code>web-agent-integration-template.md</code></td>
+            <td>¿Cómo conecta React/Next.js con backend y agente de IA?</td>
+            <td>Diseño del límite browser, API y Foundry.</td>
+          </tr>
+          <tr>
+            <td><code>api-contract-template.md</code></td>
+            <td>¿Qué contrato usa el frontend para hablar con el backend?</td>
+            <td>Endpoint, request, response, errores, auth y pruebas.</td>
+          </tr>
         </tbody>
       </table>
     </section>
@@ -1076,6 +1167,13 @@
           <p>
             Sube este repo a GitHub como template. En cada proyecto nuevo, copias esta estructura o creas
             el repo desde la plantilla.
+          </p>
+        </article>
+        <article class="card">
+          <h3>Para React o Next.js con Foundry</h3>
+          <p>
+            Usa <code>.codex/workflows/web-ai-agent-app.md</code>. Ese flujo llama a Frontend Engineer,
+            API Integration Engineer, AI Foundry Engineer y la skill <code>web-agent-integration</code>.
           </p>
         </article>
       </div>

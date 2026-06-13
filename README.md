@@ -7,6 +7,7 @@ This repository defines a Codex delivery harness for software projects that need
 The harness is designed to prevent direct jumps from idea to code. It provides:
 
 * Delivery workflows for features, bug fixes and architecture reviews.
+* Web AI agent workflow for React, Next.js, backend APIs and Azure AI Foundry integrations.
 * Specialist role instructions under `.codex/agents`.
 * Reusable templates under `.codex/templates`.
 * Local skills under `skills`.
@@ -26,6 +27,16 @@ Use this flow for production changes:
 8. Pull Request Chain Plan
 9. Implementation
 10. Review
+
+For React, Next.js or AI chat applications, use `.codex/workflows/web-ai-agent-app.md`. The expected boundary is:
+
+```text
+React or Next.js UI
+  -> Backend API or BFF
+      -> Azure AI Foundry Agent or other AI service
+```
+
+Do not call Foundry or other privileged AI services directly from browser code.
 
 Implementation should not begin until the Definition of Ready in `AGENTS.md` is satisfied or skipped gates are explicitly documented with risk.
 
@@ -59,6 +70,7 @@ Every non-trivial change should link these artifacts together:
 
 * Specification
 * Technical design
+* Web/API integration design for React, Next.js or browser-to-agent features
 * ADRs when decisions have long-term impact
 * Security review when risk is material
 * Test plan

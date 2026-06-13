@@ -72,6 +72,7 @@ Expected outputs:
 * Security Review or Threat Model when risk is material
 * Operations or Production Readiness Plan when deployment is in scope
 * Review Report before final delivery
+* Web/API Integration Design when a browser frontend interacts with backend APIs or AI agents
 
 Artifact requirements:
 
@@ -176,6 +177,18 @@ Before implementation:
 * Define scalability considerations
 * Define failure scenarios
 
+For web applications:
+
+* Identify frontend framework: React, Next.js, Vite or other.
+* Define rendering model: CSR, SSR, SSG or hybrid.
+* Define browser-to-backend API boundary.
+* Define backend-to-agent or backend-to-service boundary.
+* Define authentication and authorization model.
+* Define CORS, rate limiting and session handling.
+* Define frontend state, loading, error and retry behavior.
+* Define accessibility and browser compatibility requirements.
+* Ensure secrets and privileged service calls stay server-side.
+
 ---
 
 # Approval Gates
@@ -244,6 +257,8 @@ Examples:
 * Product Analyst
 * AI Foundry Engineer
 * Architect
+* Frontend Engineer
+* API Integration Engineer
 * Security Reviewer
 * DevOps Engineer
 * Test Engineer
